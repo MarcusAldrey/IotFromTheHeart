@@ -1,11 +1,18 @@
 package view;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.EventQueue;
+import java.awt.Toolkit;
+import java.rmi.server.UID;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+import javax.swing.JTable;
+import javax.swing.JScrollPane;
+import javax.swing.JTextField;
+import javax.swing.JTextArea;
 
 public class DoctorView extends JFrame {
 
@@ -36,11 +43,19 @@ public class DoctorView extends JFrame {
 	 */
 	public DoctorView() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 450, 300);
+		Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();		
+		setBounds((screen.width-600)/2, (screen.height-500)/2, 600, 500);
+		this.setTitle("Doctor View");
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-		contentPane.setLayout(new BorderLayout(0, 0));
 		setContentPane(contentPane);
+		contentPane.setLayout(null);
+		
+		JScrollPane scrollPane = new JScrollPane();
+		scrollPane.setBounds(370, 11, 204, 439);
+		contentPane.add(scrollPane);
+		
+		JTextArea textArea = new JTextArea();
+		scrollPane.setViewportView(textArea);
 	}
-
 }
