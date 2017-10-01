@@ -6,6 +6,8 @@ import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -29,6 +31,10 @@ import javax.swing.JSeparator;
 
 public class DataGenerator extends JFrame implements ActionListener {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 	private JTextField textFreq;
 	private JTextField textPress;
@@ -43,6 +49,9 @@ public class DataGenerator extends JFrame implements ActionListener {
 	private JTextField textIP;
 	private boolean estaTransmitindo;
 	private JButton btnStartStop;
+	private Timer timer;
+	private Integer ID;
+	public static Integer idCont = 0;
 	
 	/**
 	 * Launch the application.
@@ -56,6 +65,7 @@ public class DataGenerator extends JFrame implements ActionListener {
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
+				idCont++;
 			}
 		});
 	}
@@ -77,6 +87,8 @@ public class DataGenerator extends JFrame implements ActionListener {
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 		UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+		timer = new Timer();
+		this.ID = idCont;
 		
 		textFreq = new JTextField();
 		textFreq.setBackground(Color.WHITE);
@@ -221,6 +233,7 @@ public class DataGenerator extends JFrame implements ActionListener {
 					textPorta.setEditable(true);
 					textIP.setEnabled(true);
 					textPorta.setEnabled(true);
+					timer.cancel(); //Terminate the timer thread
 				}
 				else {
 					try {
@@ -238,16 +251,7 @@ public class DataGenerator extends JFrame implements ActionListener {
 					estaTransmitindo = true;
 					btnStartStop.setText("Transmitindo");
 					btnStartStop.setForeground(Color.DARK_GRAY);
-					while(estaTransmitindo) {
-						try {
-							Thread.sleep(2500);
-						} catch (InterruptedException e1) {
-							// TODO Auto-generated catch block
-							e1.printStackTrace();
-						}
-						String mensagem = textPress.getText();
-						enviarDados(mensagem);
-					}
+					timer.schedule(new Transmissao(),0,2000);
 				}					
 			}
 		});
@@ -286,4 +290,11 @@ public class DataGenerator extends JFrame implements ActionListener {
 		}
 		atualizarTextos();
 	}
+	
+	private class Transmissao extends TimerTask {
+        public void run() {
+            System.out.println("Sensor " + ID + "enviou " + di + "/" + si + "  " + freq);
+        }
+    }
+	
 }
