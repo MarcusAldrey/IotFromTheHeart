@@ -50,12 +50,5 @@ public class DoctorView extends JFrame {
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
-		
-		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setBounds(370, 11, 204, 439);
-		contentPane.add(scrollPane);
-		
-		JTextArea textArea = new JTextArea();
-		scrollPane.setViewportView(textArea);
 	}
 }

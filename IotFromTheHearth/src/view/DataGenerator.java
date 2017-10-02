@@ -50,8 +50,7 @@ public class DataGenerator extends JFrame implements ActionListener {
 	private boolean estaTransmitindo;
 	private JButton btnStartStop;
 	private Timer timer;
-	private Integer ID;
-	public static Integer idCont = 0;
+	private JTextField txtNome;
 	
 	/**
 	 * Launch the application.
@@ -65,7 +64,6 @@ public class DataGenerator extends JFrame implements ActionListener {
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
-				idCont++;
 			}
 		});
 	}
@@ -87,8 +85,6 @@ public class DataGenerator extends JFrame implements ActionListener {
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 		UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-		timer = new Timer();
-		this.ID = idCont;
 		
 		textFreq = new JTextField();
 		textFreq.setBackground(Color.WHITE);
@@ -233,7 +229,8 @@ public class DataGenerator extends JFrame implements ActionListener {
 					textPorta.setEditable(true);
 					textIP.setEnabled(true);
 					textPorta.setEnabled(true);
-					timer.cancel(); //Terminate the timer thread
+					timer.cancel();
+					System.out.println("Tramissão cancelada");
 				}
 				else {
 					try {
@@ -251,11 +248,23 @@ public class DataGenerator extends JFrame implements ActionListener {
 					estaTransmitindo = true;
 					btnStartStop.setText("Transmitindo");
 					btnStartStop.setForeground(Color.DARK_GRAY);
+					timer = new Timer();
 					timer.schedule(new Transmissao(),0,2000);
+					System.out.println("Tramissão iniciada");
 				}					
 			}
 		});
 		contentPane.add(btnStartStop);
+		
+		JLabel lblNome = new JLabel("Nome:");
+		lblNome.setBounds(10, 438, 46, 14);
+		contentPane.add(lblNome);
+		
+		txtNome = new JTextField();
+		txtNome.setText("Jo\u00E3o");
+		txtNome.setColumns(10);
+		txtNome.setBounds(42, 435, 86, 20);
+		contentPane.add(txtNome);
 	}
 	
 	private void enviarDados(String mensagem) {
@@ -293,8 +302,7 @@ public class DataGenerator extends JFrame implements ActionListener {
 	
 	private class Transmissao extends TimerTask {
         public void run() {
-            System.out.println("Sensor " + ID + "enviou " + di + "/" + si + "  " + freq);
+            System.out.println("Sensor " + txtNome.getText() + " enviou " + di + "/" + si + "  " + freq);
         }
     }
-	
 }
