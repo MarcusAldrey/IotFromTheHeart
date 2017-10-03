@@ -13,8 +13,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
-import util.Sensor;
-
+import control.Controller;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.SwingConstants;
@@ -48,10 +47,13 @@ public class DataGenerator extends JFrame implements ActionListener {
 	private JTextField textPorta;
 	private JTextField textIP;
 	private boolean estaTransmitindo;
+	private boolean emMovimento;
 	private JButton btnStartStop;
 	private Timer timer;
 	private JTextField txtNome;
-	
+	private JComboBox<String> comboBoxEstado;
+	private Controller controller;
+	private int tentativas;
 	/**
 	 * Launch the application.
 	 */
@@ -85,7 +87,8 @@ public class DataGenerator extends JFrame implements ActionListener {
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 		UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-		
+		controller = Controller.getInstance();
+
 		textFreq = new JTextField();
 		textFreq.setBackground(Color.WHITE);
 		textFreq.setHorizontalAlignment(SwingConstants.CENTER);
@@ -94,37 +97,37 @@ public class DataGenerator extends JFrame implements ActionListener {
 		textFreq.setBounds(220, 32, 144, 60);
 		contentPane.add(textFreq);
 		textFreq.setColumns(10);
-		
+
 		JLabel lblNewLabel = new JLabel("Frequ\u00EAncia card\u00EDaca");
 		lblNewLabel.setBounds(10, 0, 564, 21);
 		lblNewLabel.setFont(new Font("Yu Gothic UI Semibold", Font.PLAIN, 15));
 		lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		contentPane.add(lblNewLabel);
-		
+
 		btnLessFreq = new JButton("");
 		btnLessFreq.setIcon(new ImageIcon(DataGenerator.class.getResource("/view/minus-symbol-inside-a-circle.png")));
 		btnLessFreq.setBounds(374, 62, 30, 30);
 		btnLessFreq.addActionListener(this);
 		contentPane.add(btnLessFreq);
-		
+
 		btnAddFreq = new JButton("");
 		btnAddFreq.setIcon(new ImageIcon(DataGenerator.class.getResource("/view/plus.png")));
 		btnAddFreq.setBounds(374, 32, 30, 30);
 		btnAddFreq.addActionListener(this);
 		contentPane.add(btnAddFreq);
-		
+
 		JLabel label = new JLabel("");
 		label.setBounds(583, 235, 0, 0);
 		contentPane.add(label);
-		
+
 		JLabel label_1 = new JLabel("");
 		label_1.setBounds(583, 235, 0, 0);
 		contentPane.add(label_1);
-		
+
 		JLabel label_2 = new JLabel("");
 		label_2.setBounds(583, 235, 0, 0);
 		contentPane.add(label_2);
-		
+
 		textPress = new JTextField();
 		textPress.setHorizontalAlignment(SwingConstants.CENTER);
 		textPress.setText("12/8");
@@ -132,148 +135,133 @@ public class DataGenerator extends JFrame implements ActionListener {
 		textPress.setBounds(220, 148, 144, 60);
 		contentPane.add(textPress);
 		textPress.setColumns(10);
-		
+
 		btnAddSi = new JButton("");
 		btnAddSi.setIcon(new ImageIcon(DataGenerator.class.getResource("/view/plus.png")));
 		btnAddSi.setBounds(374, 148, 30, 30);
 		btnAddSi.addActionListener(this);
 		contentPane.add(btnAddSi);
-		
+
 		btnLessSi = new JButton("");
 		btnLessSi.setIcon(new ImageIcon(DataGenerator.class.getResource("/view/minus-symbol-inside-a-circle.png")));
 		btnLessSi.setBounds(374, 178, 30, 30);
 		btnLessSi.addActionListener(this);
 		contentPane.add(btnLessSi);
-		
+
 		JLabel lblPressoArterial = new JLabel("Press\u00E3o Arterial");
 		lblPressoArterial.setBounds(10, 116, 564, 21);
 		contentPane.add(lblPressoArterial);
 		lblPressoArterial.setHorizontalAlignment(SwingConstants.CENTER);
 		lblPressoArterial.setFont(new Font("Yu Gothic UI Semibold", Font.PLAIN, 15));
-		
+
 		JLabel lblEstado = new JLabel("Estado");
 		lblEstado.setBounds(10, 238, 564, 21);
 		contentPane.add(lblEstado);
 		lblEstado.setHorizontalAlignment(SwingConstants.CENTER);
 		lblEstado.setFont(new Font("Yu Gothic UI Semibold", Font.PLAIN, 15));
-		
-		JComboBox<String> comboBox = new JComboBox<String>();
-		comboBox.setFont(new Font("Bernard MT Condensed", Font.PLAIN, 20));
-		comboBox.setBackground(Color.WHITE);
-		comboBox.addItem("Em repouso");
-		comboBox.addItem("Em movimento");
-		comboBox.setBounds(220, 270, 144, 60);
-		contentPane.add(comboBox);
-		
+
+		comboBoxEstado = new JComboBox<String>();
+		comboBoxEstado.setFont(new Font("Roboto", Font.PLAIN, 18));
+		comboBoxEstado.setBackground(Color.WHITE);
+		comboBoxEstado.addItem("Em repouso");
+		comboBoxEstado.addItem("Em movimento");
+		comboBoxEstado.setBounds(212, 270, 160, 60);
+		comboBoxEstado.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				atualizarTextos();
+			}
+		});
+		contentPane.add(comboBoxEstado);
+
 		btnAddDi = new JButton("");
 		btnAddDi.setIcon(new ImageIcon(DataGenerator.class.getResource("/view/plus.png")));
 		btnAddDi.setBounds(180, 148, 30, 30);
 		btnAddDi.addActionListener(this);
 		contentPane.add(btnAddDi);
-		
+
 		btnLessDi = new JButton("");
 		btnLessDi.setIcon(new ImageIcon(DataGenerator.class.getResource("/view/minus-symbol-inside-a-circle.png")));
 		btnLessDi.setBounds(180, 178, 30, 30);
 		btnLessDi.addActionListener(this);
 		contentPane.add(btnLessDi);
-		
+
 		JSeparator separator = new JSeparator();
 		separator.setBounds(10, 116, 564, 8);
 		contentPane.add(separator);
-		
+
 		JSeparator separator_1 = new JSeparator();
 		separator_1.setBounds(10, 235, 564, 8);
 		contentPane.add(separator_1);
-		
+
 		JSeparator separator_2 = new JSeparator();
 		separator_2.setBounds(10, 341, 564, 8);
 		contentPane.add(separator_2);
-		
+
 		JLabel lblInformaesDeConexo = new JLabel("Informa\u00E7\u00F5es de conex\u00E3o");
 		lblInformaesDeConexo.setFont(new Font("Tahoma", Font.BOLD, 11));
 		lblInformaesDeConexo.setBounds(10, 360, 159, 14);
 		contentPane.add(lblInformaesDeConexo);
-		
+
 		JLabel lblPorta = new JLabel("Porta:");
 		lblPorta.setBounds(10, 385, 46, 14);
 		contentPane.add(lblPorta);
-		
+
 		JLabel lblIp = new JLabel("IP:");
 		lblIp.setBounds(10, 410, 46, 14);
 		contentPane.add(lblIp);
-		
+
 		textPorta = new JTextField();
 		textPorta.setText("12345");
 		textPorta.setBounds(42, 382, 86, 20);
 		contentPane.add(textPorta);
 		textPorta.setColumns(10);
-		
+
 		textIP = new JTextField();
-		textIP.setText("10.0.0.106");
+		textIP.setText("localhost");
 		textIP.setColumns(10);
 		textIP.setBounds(42, 407, 86, 20);
 		contentPane.add(textIP);
-		
+
 		btnStartStop = new JButton("Iniciar transmiss\u00E3o");
 		btnStartStop.setBounds(220, 381, 144, 43);
 		btnStartStop.addActionListener(new ActionListener() {
-			
+
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
-				if(estaTransmitindo) {
-					estaTransmitindo = false;
-					btnStartStop.setText("Iniciar Transmissão");
-					btnStartStop.setForeground(Color.BLACK);
-					textIP.setEditable(true);
-					textPorta.setEditable(true);
-					textIP.setEnabled(true);
-					textPorta.setEnabled(true);
-					timer.cancel();
-					System.out.println("Tramissão cancelada");
-				}
-				else {
-					try {
-						new Sensor(textIP.getText(), Integer.parseInt(textPorta.getText()));
-					} catch (NumberFormatException | IOException e1) {
-						// TODO Auto-generated catch block
-						JOptionPane.showMessageDialog(null, "Algo inesperado aconteceu.");
-						e1.printStackTrace();
-						return;
-					}
-					textIP.setEditable(false);
-					textPorta.setEditable(false);
-					textIP.setEnabled(false);
-					textPorta.setEnabled(false);
-					estaTransmitindo = true;
-					btnStartStop.setText("Transmitindo");
-					btnStartStop.setForeground(Color.DARK_GRAY);
-					timer = new Timer();
-					timer.schedule(new Transmissao(),0,2000);
-					System.out.println("Tramissão iniciada");
-				}					
+				if(estaTransmitindo) 
+					pararTransmissao();
+				else 
+					iniciarTransmissao();					
 			}
 		});
 		contentPane.add(btnStartStop);
-		
+
 		JLabel lblNome = new JLabel("Nome:");
-		lblNome.setBounds(10, 438, 46, 14);
+		lblNome.setBounds(10, 435, 46, 14);
 		contentPane.add(lblNome);
-		
+
 		txtNome = new JTextField();
 		txtNome.setText("Jo\u00E3o");
 		txtNome.setColumns(10);
-		txtNome.setBounds(42, 435, 86, 20);
+		txtNome.setBounds(42, 432, 86, 20);
 		contentPane.add(txtNome);
 	}
-	
+
 	private void enviarDados(String mensagem) {
 		System.out.println(mensagem);
 	}
-	
+
 	private void atualizarTextos() {
 		textPress.setText(di + "/" + si);	
 		textFreq.setText(Integer.toString(freq));
+		if(comboBoxEstado.getSelectedIndex() == 0)
+			emMovimento = false;
+		else
+			emMovimento = true;
 	}
 
 	@Override
@@ -282,27 +270,74 @@ public class DataGenerator extends JFrame implements ActionListener {
 		if(e.getSource().equals(btnAddFreq)) {
 			freq+=1;
 		}
-		if(e.getSource().equals(btnLessFreq)) {
+		else if(e.getSource().equals(btnLessFreq)) {
 			freq-=1;
 		}
-		if(e.getSource().equals(btnAddSi)) {
+		else if(e.getSource().equals(btnAddSi)) {
 			si+=1;
 		}
-		if(e.getSource().equals(btnLessSi)) {
+		else if(e.getSource().equals(btnLessSi)) {
 			si-=1;
 		}
-		if(e.getSource().equals(btnAddDi)) {
+		else if(e.getSource().equals(btnAddDi)) {
 			di+=1;
 		}
-		if(e.getSource().equals(btnLessDi)) {
+		else if(e.getSource().equals(btnLessDi)) {
 			di-=1;
 		}
 		atualizarTextos();
 	}
+
+	private void pararTransmissao(){
+		estaTransmitindo = false;
+		btnStartStop.setText("Iniciar Transmissão");
+		btnStartStop.setForeground(Color.BLACK);
+		textIP.setEditable(true);
+		textPorta.setEditable(true);
+		textIP.setEnabled(true);
+		textPorta.setEnabled(true);
+		txtNome.setEnabled(true);
+		timer.cancel();
+		System.out.println("Tramissão cancelada");
+		tentativas = 0;
+	}
+	
+	private void iniciarTransmissao() {
+		try {
+			controller.criarConexao(textIP.getText(), Integer.parseInt(textPorta.getText()));
+		} catch (NumberFormatException | IOException e1) {
+			// TODO Auto-generated catch block
+			JOptionPane.showMessageDialog(null, "Não foi possível criar conexão");
+			e1.printStackTrace();
+			return;
+		}
+		textIP.setEditable(false);
+		textPorta.setEditable(false);
+		textIP.setEnabled(false);
+		textPorta.setEnabled(false);
+		txtNome.setEnabled(false);
+		estaTransmitindo = true;
+		btnStartStop.setText("Transmitindo");
+		btnStartStop.setForeground(Color.DARK_GRAY);
+		timer = new Timer();
+		timer.schedule(new Transmissao(),2000,2000);
+		System.out.println("Tramissão iniciada");
+	}
 	
 	private class Transmissao extends TimerTask {
-        public void run() {
-            System.out.println("Sensor " + txtNome.getText() + " enviou " + di + "/" + si + "  " + freq);
-        }
-    }
+		public void run() {
+			if(tentativas == 5) {
+				pararTransmissao();
+				JOptionPane.showMessageDialog(null, "Conexão perdida");
+				return;
+			}
+			try {
+				controller.enviarMensagem("connect sensor:" + txtNome.getText() + "," + di + "," + si + "," + freq + "," + emMovimento);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				tentativas++;
+				e.printStackTrace();
+			}
+		}
+	}
 }

@@ -1,6 +1,6 @@
 package model;
 
-public class Doctor {
+public class Medico {
 	String nome;
 	String senha;
 }
