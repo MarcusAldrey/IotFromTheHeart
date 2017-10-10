@@ -1,6 +1,13 @@
 package model;
 
-public class Paciente implements Comparable<Object>{
+import java.io.Serializable;
+
+public class Paciente implements Comparable<Object>, Serializable{
+	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	
 	private String nome;
 	private int frequencia;

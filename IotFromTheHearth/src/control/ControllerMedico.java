@@ -58,8 +58,9 @@ public class ControllerMedico {
 	 */
 	public List<Paciente> getPacientes() throws IOException, ClassNotFoundException {
 		output.writeObject("connect medico,info,todos");
-		while(true)
-			System.out.println(input.readObject());
+		while(true) {
+			return (List<Paciente>) input.readObject();
+		}
 	}
 
 	/**

@@ -7,6 +7,7 @@ import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JFrame;
@@ -106,7 +107,7 @@ public class DoctorView extends JFrame {
 					return;
 				}
 				btnConectar.setText("Conectado");
-				List <Paciente> pacientes = null;
+				List <Paciente> pacientes = new ArrayList<Paciente>();
 				try {
 					pacientes = ControllerMedico.getInstance().getPacientes();
 				} catch (ClassNotFoundException | IOException e1) {
@@ -115,7 +116,7 @@ public class DoctorView extends JFrame {
 					e1.printStackTrace();
 					return;
 				}
-				list = new JList<Paciente>((Paciente[]) pacientes.toArray());
+				list = new JList(pacientes.toArray());
 			}
 		});
 		contentPane.add(btnConectar);
