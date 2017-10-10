@@ -57,7 +57,7 @@ public class DoctorView extends JFrame {
 	boolean monitoramentoAtivo;
 	private JButton btnMonitoramento;
 	private JButton btnAtualizar;
-	
+
 	/**
 	 * Launch the application.
 	 */
@@ -225,16 +225,20 @@ public class DoctorView extends JFrame {
 			}
 		});
 		contentPane.add(btnAtualizar);				
-		
+
 		btnMonitoramento = new JButton("Ativar");
 		btnMonitoramento.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				if(monitoramentoAtivo) 
+					pararTransmissao();
+				else 
+					iniciarTransmissao();	
 			}
 		});
 		btnMonitoramento.setBounds(387, 37, 89, 23);
 		contentPane.add(btnMonitoramento);
 	}
-	
+
 	private void pararTransmissao(){
 		monitoramentoAtivo = false;
 		btnMonitoramento.setText("Ativar");
@@ -244,8 +248,34 @@ public class DoctorView extends JFrame {
 		timer.cancel();
 		System.out.println("Monitoramento cancelado");
 	}
+
+	private void atualizarPacienteMonitorado() {
+		try {
+			pacienteMonitorado = ControllerMedico.getInstance().receberPacientedoServidor((String) list.getSelectedValue());
+		} catch (ClassNotFoundException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+			return;
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+			return;
+		} catch (PacienteNaoEncontradoException e1) {
+			// TODO Auto-generated catch block
+			JOptionPane.showMessageDialog(null, "Paciente não encontrado");
+			e1.printStackTrace();
+			return;
+		} catch (MensagemInvalidaException e1) {
+			// TODO Auto-generated catch block
+			JOptionPane.showMessageDialog(null, "Mensagem recebida do servidor inválida");
+			e1.printStackTrace();
+			return;
+		}
+	}
 	
 	private void iniciarTransmissao() {
+		
+		atualizarPacienteMonitorado();
 		monitoramentoAtivo = true;
 		btnMonitoramento.setText("Desativar");
 		btnMonitoramento.setForeground(Color.DARK_GRAY);
@@ -254,6 +284,7 @@ public class DoctorView extends JFrame {
 		timer = new Timer();
 		timer.schedule(new Monitoramento(),2000,2000);
 		System.out.println("Monitoramento iniciado");
+
 	}
 
 	private class SelecaoDePaciente implements ListSelectionListener {
@@ -261,36 +292,10 @@ public class DoctorView extends JFrame {
 		@Override
 		public void valueChanged(ListSelectionEvent e) {
 			// TODO Auto-generated method stub
-			if (e.getValueIsAdjusting()) {//This line prevents double events
-				System.out.println(list.getSelectedValue());
-				try {
-					pacienteMonitorado = ControllerMedico.getInstance().receberPacientedoServidor(list.getSelectedValue().toString());
-				} catch (ClassNotFoundException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-					timer.cancel();
-					return;
-				} catch (IOException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-					timer.cancel();
-					return;
-				} catch (PacienteNaoEncontradoException e1) {
-					// TODO Auto-generated catch block
-					JOptionPane.showMessageDialog(null, "Paciente não encontrado");
-					e1.printStackTrace();
-					timer.cancel();
-					return;
-				} catch (MensagemInvalidaException e1) {
-					// TODO Auto-generated catch block
-					JOptionPane.showMessageDialog(null, "Mensagem recebida do servidor inválida");
-					e1.printStackTrace();
-					timer.cancel();
-					return;
-				}
+			if(e.getValueIsAdjusting()) {
+				pacienteSelecionado = (String) list.getSelectedValue();
+				System.out.println(pacienteSelecionado);
 			}
-			timer = new Timer();
-			timer.schedule(new Monitoramento(), 0,2000);
 		}
 
 	}
@@ -300,15 +305,16 @@ public class DoctorView extends JFrame {
 		@Override
 		public void run() {
 			// TODO Auto-generated method stub
-			System.out.println(pacienteMonitorado);
-			if(pacienteMonitorado != null) {
-				textFreq.setText(Integer.toString(pacienteMonitorado.getFrequencia()));
-				textPress.setText(pacienteMonitorado.getSistole()+"/"+pacienteMonitorado.getDiastole());
-				if(pacienteMonitorado.isEmMovimento().equals("true"))
-					textEstado.setText("Em movimento");
-				else
-					textEstado.setText("Parado");
-			}
+			atualizarPacienteMonitorado();
+			String infoAtuais = pacienteMonitorado.getFrequencia()+pacienteMonitorado.getSistole()+"/"+pacienteMonitorado.getDiastole()+pacienteMonitorado.isEmMovimento();
+			System.out.println(infoAtuais);
+			textFreq.setText(Integer.toString(pacienteMonitorado.getFrequencia()));
+			textPress.setText(pacienteMonitorado.getSistole()+"/"+pacienteMonitorado.getDiastole());
+			if(pacienteMonitorado.isEmMovimento().equals("true"))
+				textEstado.setText("Em movimento");
+			else
+				textEstado.setText("Parado");
+
 		}
 
 	}
