@@ -13,7 +13,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
-import control.Controller;
+import control.ControllerServer;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.SwingConstants;
@@ -52,7 +52,7 @@ public class DataGenerator extends JFrame implements ActionListener {
 	private Timer timer;
 	private JTextField txtNome;
 	private JComboBox<String> comboBoxEstado;
-	private Controller controller;
+	private ControllerServer controller;
 	private int tentativas;
 	/**
 	 * Launch the application.
@@ -87,7 +87,7 @@ public class DataGenerator extends JFrame implements ActionListener {
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 		UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-		controller = Controller.getInstance();
+		controller = ControllerServer.getInstance();
 
 		textFreq = new JTextField();
 		textFreq.setBackground(Color.WHITE);
@@ -268,10 +268,10 @@ public class DataGenerator extends JFrame implements ActionListener {
 	public void actionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub
 		if(e.getSource().equals(btnAddFreq)) {
-			freq+=1;
+			freq+=5;
 		}
 		else if(e.getSource().equals(btnLessFreq)) {
-			freq-=1;
+			freq-=5;
 		}
 		else if(e.getSource().equals(btnAddSi)) {
 			si+=1;

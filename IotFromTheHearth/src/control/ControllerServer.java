@@ -4,20 +4,27 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.List;
 
-public class Controller {
+import model.Medico;
+import model.Paciente;
+
+public class ControllerServer {
 	private Socket socket;
 	private ObjectInputStream input;
 	private ObjectOutputStream output;
-	private static Controller instance;
+	private static ControllerServer instance;
+	private static List<Medico> medicos = new ArrayList<Medico>();
+	private static List<Paciente> pacientes = new ArrayList<Paciente>();
 
-	private Controller() {
+	private ControllerServer() {
 
 	}
 
-	public static Controller getInstance(){
+	public static ControllerServer getInstance(){
 		if(instance == null)
-			instance = new Controller();
+			instance = new ControllerServer();
 		return instance;		 
 	}
 

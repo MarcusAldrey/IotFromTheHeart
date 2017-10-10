@@ -50,4 +50,5 @@ public class Paciente implements Comparable<Object>{
 	public void setEmMovimento(boolean emMovimento) {
 		this.emMovimento = emMovimento;
 	}
+	
 }

@@ -1,18 +1,12 @@
 package view;
 
-import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.Toolkit;
-import java.rmi.server.UID;
-
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.JTable;
-import javax.swing.JScrollPane;
-import javax.swing.JTextField;
-import javax.swing.JTextArea;
 
 public class DoctorView extends JFrame {
 
@@ -21,6 +15,7 @@ public class DoctorView extends JFrame {
 	 */
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
+	private JTable table;
 
 	/**
 	 * Launch the application.
@@ -29,8 +24,10 @@ public class DoctorView extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					DoctorView frame = new DoctorView();
+					TelaLoginMedico frame = new TelaLoginMedico();
 					frame.setVisible(true);
+					
+					
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -50,5 +47,14 @@ public class DoctorView extends JFrame {
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
+		
+		table = new JTable();
+		table.setBounds(10, 11, 285, 439);
+		contentPane.add(table);
+	}
+	
+	private void abrirTelaPrincipal() {
+		DoctorView frame = new DoctorView();
+		frame.setVisible(true);
 	}
 }

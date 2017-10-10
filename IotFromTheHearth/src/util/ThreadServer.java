@@ -31,7 +31,10 @@ public class ThreadServer extends Thread {
 		// TODO Auto-generated method stub
 		try {
 			while(true)
-				System.out.println(input.readObject());
+				if(input.readObject().equals("CONNECT MEDICO:LOGIN,eu,eu"))
+					output.writeObject(true);
+				else
+					output.writeObject(false);
 		} catch (ClassNotFoundException | IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
