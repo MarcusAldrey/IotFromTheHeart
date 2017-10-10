@@ -44,7 +44,9 @@ public class DoctorView extends JFrame {
 	private JTextField textPorta;
 	private JLabel lblIp;
 	private JTextField textIP;
-	private JList<?> list;
+	private List<Paciente> pacientesCriticos;
+	private JTable table;
+	protected JList list;
 
 	/**
 	 * Launch the application.
@@ -107,16 +109,6 @@ public class DoctorView extends JFrame {
 					return;
 				}
 				btnConectar.setText("Conectado");
-				List <Paciente> pacientes = new ArrayList<Paciente>();
-				try {
-					pacientes = ControllerMedico.getInstance().getPacientes();
-				} catch (ClassNotFoundException | IOException e1) {
-					// TODO Auto-generated catch block
-					JOptionPane.showMessageDialog(null, "Não foi possível receber a lista de clientes");
-					e1.printStackTrace();
-					return;
-				}
-				list = new JList(pacientes.toArray());
 			}
 		});
 		contentPane.add(btnConectar);
@@ -204,14 +196,30 @@ public class DoctorView extends JFrame {
 		JSeparator separator_1 = new JSeparator();
 		separator_1.setBounds(10, 100, 249, 8);
 		contentPane.add(separator_1);
+				
+		JButton btnAtualizar = new JButton("Atualizar");
+		btnAtualizar.setBounds(170, 115, 89, 23);
+		btnAtualizar.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				try {
+					pacientesCriticos = ControllerMedico.getInstance().getPacientes();
+				} catch (ClassNotFoundException | IOException e1) {
+					// TODO Auto-generated catch block
+					JOptionPane.showMessageDialog(null, "Não foi possível receber a lista de clientes");
+					e1.printStackTrace();
+					return;
+				}
+				list = new JList(pacientesCriticos.toArray());
+				list.setBounds(10, 144, 249, 299);
+				contentPane.add(list);
+				list.repaint();
+			}
+		});
+		contentPane.add(btnAtualizar);				
 		
-		list = new JList<Object>();
-		list.setFont(new Font("Roboto", Font.PLAIN, 16));
-		list.setBounds(10, 144, 249, 299);
-		list.setVisibleRowCount(10);
-		list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		contentPane.add(list);
 		
 	}
-	
 }

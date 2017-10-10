@@ -39,6 +39,7 @@ public class ThreadServer extends Thread {
 		try {
 			while(true) {
 				String[] mensagem = ((String) input.readObject()).split(","); //Divide a mensagem onde tem vírgula
+				System.out.println(ControllerServer.getInstance().getPacientes().size());
 				//for(String m : mensagem)
 				//System.out.println(m);
 				/*Caso a mensagem venha de um sensor*/
