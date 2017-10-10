@@ -56,10 +56,11 @@ public class ControllerMedico {
 	 * @throws IOException 
 	 * @throws ClassNotFoundException 
 	 */
-	public List<Paciente> getPacientes() throws IOException, ClassNotFoundException {
+	public String[] getPacientes() throws IOException, ClassNotFoundException {
 		output.writeObject("connect medico,info,todos");
 		while(true) {
-			return (List<Paciente>) input.readObject();
+			String mensagem[] = ((String) input.readObject()).split(",");
+			return mensagem;
 		}
 	}
 

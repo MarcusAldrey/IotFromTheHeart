@@ -82,8 +82,16 @@ public class ThreadServer extends Thread {
 					/* Caso a mensagem seja de um médico, será verificado se ele quer todos os pacientes ou algum especifico */
 					if(mensagem[1].equals("info")) {
 						/* Caso queira todos, recebera a lista de pacientes, ordenada por risco */
-						if(mensagem[2].equals("todos"))
-							output.writeObject(ControllerServer.getInstance().getPacientes());
+						if(mensagem[2].equals("todos")) {
+							String todosOsPacientes = "";
+							List<Paciente> pacientes = ControllerServer.getInstance().getPacientes();
+							Iterator<Paciente> iterator = pacientes.iterator();
+							while(iterator.hasNext()) {
+								Paciente paciente = (Paciente) iterator.next();
+								todosOsPacientes.concat(paciente.getNome()+",");					
+							}
+							output.writeObject(todosOsPacientes);
+						}
 						/* Caso queira algum especifico, receberá o objeto do paciente */
 						else {
 							List<Paciente> pacientes = ControllerServer.getInstance().getPacientes();

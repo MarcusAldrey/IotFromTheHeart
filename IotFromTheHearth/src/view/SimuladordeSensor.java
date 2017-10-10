@@ -220,7 +220,7 @@ public class SimuladordeSensor extends JFrame implements ActionListener {
 		textPorta.setColumns(10);
 
 		textIP = new JTextField();
-		textIP.setText("localhost");
+		textIP.setText("10.0.0.106");
 		textIP.setColumns(10);
 		textIP.setBounds(42, 407, 86, 20);
 		contentPane.add(textIP);

@@ -44,7 +44,7 @@ public class DoctorView extends JFrame {
 	private JTextField textPorta;
 	private JLabel lblIp;
 	private JTextField textIP;
-	private List<Paciente> pacientesCriticos;
+	private String[] pacientesCriticos;
 	private JTable table;
 	protected JList list;
 
@@ -212,7 +212,8 @@ public class DoctorView extends JFrame {
 					e1.printStackTrace();
 					return;
 				}
-				list = new JList(pacientesCriticos.toArray());
+				list = new JList(pacientesCriticos);
+				list.setVisibleRowCount(10);
 				list.setBounds(10, 144, 249, 299);
 				contentPane.add(list);
 				list.repaint();
