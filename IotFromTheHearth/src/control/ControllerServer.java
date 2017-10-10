@@ -33,6 +33,10 @@ public class ControllerServer {
 		output.flush();
 	}
 
+	public void adicionarPaciente(Paciente novo) {
+		pacientes.add(novo);
+	}
+	
 	public void criarConexao(String IP, int porta) throws IOException {
 		socket = new Socket(IP,porta);
 		output = new ObjectOutputStream(socket.getOutputStream());
@@ -42,4 +46,20 @@ public class ControllerServer {
 	public Object receberMensagem() throws ClassNotFoundException, IOException{
 		return input.readObject();
 	}
+
+	/**
+	 * @return the pacientes
+	 */
+	public List<Paciente> getPacientes() {
+		return pacientes;
+	}
+
+	/**
+	 * @param pacientes the pacientes to set
+	 */
+	public void setPacientes(List<Paciente> pacientes) {
+		this.pacientes = pacientes;
+	}
+	
+	
 }

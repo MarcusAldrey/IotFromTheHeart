@@ -28,7 +28,7 @@ import javax.swing.JComboBox;
 import java.awt.Color;
 import javax.swing.JSeparator;
 
-public class DataGenerator extends JFrame implements ActionListener {
+public class SimuladordeSensor extends JFrame implements ActionListener {
 
 	/**
 	 * 
@@ -61,7 +61,7 @@ public class DataGenerator extends JFrame implements ActionListener {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					DataGenerator frame = new DataGenerator();
+					SimuladordeSensor frame = new SimuladordeSensor();
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -77,7 +77,7 @@ public class DataGenerator extends JFrame implements ActionListener {
 	 * @throws InstantiationException 
 	 * @throws ClassNotFoundException 
 	 */
-	public DataGenerator() throws ClassNotFoundException, InstantiationException, IllegalAccessException, UnsupportedLookAndFeelException {
+	public SimuladordeSensor() throws ClassNotFoundException, InstantiationException, IllegalAccessException, UnsupportedLookAndFeelException {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();		
 		setBounds((screen.width-600)/2, (screen.height-500)/2, 600, 500);
@@ -105,13 +105,13 @@ public class DataGenerator extends JFrame implements ActionListener {
 		contentPane.add(lblNewLabel);
 
 		btnLessFreq = new JButton("");
-		btnLessFreq.setIcon(new ImageIcon(DataGenerator.class.getResource("/view/minus-symbol-inside-a-circle.png")));
+		btnLessFreq.setIcon(new ImageIcon(SimuladordeSensor.class.getResource("/view/minus-symbol-inside-a-circle.png")));
 		btnLessFreq.setBounds(374, 62, 30, 30);
 		btnLessFreq.addActionListener(this);
 		contentPane.add(btnLessFreq);
 
 		btnAddFreq = new JButton("");
-		btnAddFreq.setIcon(new ImageIcon(DataGenerator.class.getResource("/view/plus.png")));
+		btnAddFreq.setIcon(new ImageIcon(SimuladordeSensor.class.getResource("/view/plus.png")));
 		btnAddFreq.setBounds(374, 32, 30, 30);
 		btnAddFreq.addActionListener(this);
 		contentPane.add(btnAddFreq);
@@ -137,13 +137,13 @@ public class DataGenerator extends JFrame implements ActionListener {
 		textPress.setColumns(10);
 
 		btnAddSi = new JButton("");
-		btnAddSi.setIcon(new ImageIcon(DataGenerator.class.getResource("/view/plus.png")));
+		btnAddSi.setIcon(new ImageIcon(SimuladordeSensor.class.getResource("/view/plus.png")));
 		btnAddSi.setBounds(374, 148, 30, 30);
 		btnAddSi.addActionListener(this);
 		contentPane.add(btnAddSi);
 
 		btnLessSi = new JButton("");
-		btnLessSi.setIcon(new ImageIcon(DataGenerator.class.getResource("/view/minus-symbol-inside-a-circle.png")));
+		btnLessSi.setIcon(new ImageIcon(SimuladordeSensor.class.getResource("/view/minus-symbol-inside-a-circle.png")));
 		btnLessSi.setBounds(374, 178, 30, 30);
 		btnLessSi.addActionListener(this);
 		contentPane.add(btnLessSi);
@@ -177,13 +177,13 @@ public class DataGenerator extends JFrame implements ActionListener {
 		contentPane.add(comboBoxEstado);
 
 		btnAddDi = new JButton("");
-		btnAddDi.setIcon(new ImageIcon(DataGenerator.class.getResource("/view/plus.png")));
+		btnAddDi.setIcon(new ImageIcon(SimuladordeSensor.class.getResource("/view/plus.png")));
 		btnAddDi.setBounds(180, 148, 30, 30);
 		btnAddDi.addActionListener(this);
 		contentPane.add(btnAddDi);
 
 		btnLessDi = new JButton("");
-		btnLessDi.setIcon(new ImageIcon(DataGenerator.class.getResource("/view/minus-symbol-inside-a-circle.png")));
+		btnLessDi.setIcon(new ImageIcon(SimuladordeSensor.class.getResource("/view/minus-symbol-inside-a-circle.png")));
 		btnLessDi.setBounds(180, 178, 30, 30);
 		btnLessDi.addActionListener(this);
 		contentPane.add(btnLessDi);
@@ -332,7 +332,7 @@ public class DataGenerator extends JFrame implements ActionListener {
 				return;
 			}
 			try {
-				controller.enviarMensagem("connect sensor:" + txtNome.getText() + "," + di + "," + si + "," + freq + "," + emMovimento);
+				controller.enviarMensagem("connect sensor," + txtNome.getText() + "," + di + "," + si + "," + freq + "," + emMovimento);
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				tentativas++;

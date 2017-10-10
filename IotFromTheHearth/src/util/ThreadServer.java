@@ -4,6 +4,13 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.util.Iterator;
+import java.util.List;
+
+import control.ControllerMedico;
+import control.ControllerServer;
+import exceptions.MensagemInvalidaException;
+import model.Paciente;
 
 public class ThreadServer extends Thread {
 
@@ -30,15 +37,54 @@ public class ThreadServer extends Thread {
 	public void run() {
 		// TODO Auto-generated method stub
 		try {
-			while(true)
-				if(input.readObject().equals("CONNECT MEDICO:LOGIN,eu,eu"))
-					output.writeObject(true);
-				else
-					output.writeObject(false);
+			while(true) {
+				String[] mensagem = ((String) input.readObject()).split(","); //Divide a mensagem onde tem vírgula
+				//for(String m : mensagem)
+					//System.out.println(m);
+				/*Caso a mensagem venha de um sensor*/
+				if(mensagem[0].equals("connect sensor")) {
+					if(mensagem.length != 6) {
+						System.out.println("Mensagem inválida recebida"); //Se a mensagem possuir a estrutura errada ela não será processada
+						return;
+					}
+					String nome = mensagem[1];
+					int sistole = Integer.parseInt(mensagem[2]);
+					int diastole = Integer.parseInt(mensagem[3]);
+					int frequencia = Integer.parseInt(mensagem[4]);
+					String emMovimento = mensagem[5];
+					List<Paciente> pacientes = ControllerServer.getInstance().getPacientes();
+					Iterator<Paciente> iterator = pacientes.iterator();
+					boolean estaNaLista = false;
+					/*Caso o paciente já esteja na lista, os valores serão atualizados*/
+					while(iterator.hasNext()) {
+						Paciente paciente = (Paciente) iterator.next();
+						if(paciente.getNome().equals(nome)) {
+							paciente.setSistole(sistole);
+							paciente.setDiastole(diastole);
+							paciente.setFrequencia(frequencia);
+							paciente.setEmMovimento(emMovimento);
+							estaNaLista = true;
+							break;
+						}
+					}
+					/*Caso o paciente não esteja na lista, será adicionado*/
+					if(estaNaLista == false) {
+						Paciente novo = new Paciente(nome, frequencia, sistole, diastole, emMovimento);
+						ControllerServer.getInstance().adicionarPaciente(novo);
+					}
+					for(Paciente paciente : pacientes)
+						System.out.println(paciente.getNome()+","+paciente.getSistole()+","+paciente.getDiastole()+","+paciente.getFrequencia()+","+paciente.isEmMovimento());
+				}
+				else if(mensagem[0] == "connect medico") {
+					
+				}
+				/*Caso a mensagem venha de um médico*/
+				
+			}
 		} catch (ClassNotFoundException | IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
+		} 
 	}
 	public Socket getSocket() {
 		return socket;

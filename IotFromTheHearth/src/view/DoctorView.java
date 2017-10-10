@@ -7,15 +7,18 @@ import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
+import java.util.List;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 import control.ControllerMedico;
+import model.Paciente;
 
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.ListSelectionModel;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.JLabel;
@@ -140,10 +143,6 @@ public class DoctorView extends JFrame {
 		lblOutrosPacientes.setBounds(10, 454, 150, 14);
 		contentPane.add(lblOutrosPacientes);
 		
-		list = new JList();
-		list.setBounds(10, 144, 249, 299);
-		contentPane.add(list);
-		
 		JSeparator separator = new JSeparator();
 		separator.setOrientation(SwingConstants.VERTICAL);
 		separator.setBounds(279, 4, 2, 495);
@@ -191,10 +190,15 @@ public class DoctorView extends JFrame {
 		JSeparator separator_1 = new JSeparator();
 		separator_1.setBounds(10, 100, 249, 8);
 		contentPane.add(separator_1);
+		
+		List pacientes = ControllerMedico.getInstance().getPacientes();
+		list = new JList(pacientes.toArray());
+		list.setFont(new Font("Roboto", Font.PLAIN, 16));
+		list.setBounds(10, 144, 249, 299);
+		list.setVisibleRowCount(10);
+		list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		contentPane.add(list);
+		
 	}
 	
-	private void abrirTelaPrincipal() {
-		DoctorView frame = new DoctorView();
-		frame.setVisible(true);
-	}
 }

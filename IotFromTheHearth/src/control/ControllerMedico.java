@@ -16,7 +16,7 @@ public class ControllerMedico {
 	private ObjectInputStream input;
 	private ObjectOutputStream output;
 	private static ControllerMedico instance;
-	private List<Paciente> paciente = new ArrayList<Paciente>();
+	private List<Paciente> pacientes;
 	
 	private ControllerMedico() {
 	}
@@ -42,12 +42,28 @@ public class ControllerMedico {
 		}
 	}
 	
-	public Paciente receberPaciente(Integer id) {
+	public Paciente receberPacientedoServidor(Integer id) {
 		return null;
 	}
 	
-	public List<Paciente> receberPacientes() {
+	public List<Paciente> receberPacientesdoServidor() {
 		return null;
 	}
+
+	/**
+	 * @return the pacientes
+	 */
+	public List<Paciente> getPacientes() {
+		return pacientes;
+	}
+
+	/**
+	 * @param pacientes the pacientes to set
+	 */
+	public void setPacientes(List<Paciente> pacientes) {
+		this.pacientes = pacientes;
+	}
+	
+	
 		
 }
