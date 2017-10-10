@@ -39,7 +39,6 @@ public class DoctorView extends JFrame {
 	 */
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
-	private JTextField textField;
 	private JLabel lblPorta;
 	private JTextField textPorta;
 	private JLabel lblIp;
@@ -84,17 +83,8 @@ public class DoctorView extends JFrame {
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 		
-		textField = new JTextField();
-		textField.setBounds(59, 11, 101, 20);
-		contentPane.add(textField);
-		textField.setColumns(10);
-		
-		JLabel lblNewLabel = new JLabel("Nome:");
-		lblNewLabel.setBounds(10, 14, 46, 14);
-		contentPane.add(lblNewLabel);
-		
 		JButton btnConectar = new JButton("Conectar");
-		btnConectar.setBounds(170, 27, 89, 46);
+		btnConectar.setBounds(169, 14, 89, 46);
 		btnConectar.addActionListener(new ActionListener() {
 			
 			@Override
@@ -115,24 +105,24 @@ public class DoctorView extends JFrame {
 		
 		lblPorta = new JLabel("Porta:");
 		lblPorta.setFont(new Font("Roboto", Font.PLAIN, 11));
-		lblPorta.setBounds(10, 42, 61, 14);
+		lblPorta.setBounds(10, 14, 61, 14);
 		contentPane.add(lblPorta);
 		
 		textPorta = new JTextField();
 		textPorta.setText("12345");
 		textPorta.setColumns(10);
-		textPorta.setBounds(59, 40, 100, 20);
+		textPorta.setBounds(59, 11, 100, 20);
 		contentPane.add(textPorta);
 		
 		lblIp = new JLabel("IP:");
 		lblIp.setFont(new Font("Roboto", Font.PLAIN, 11));
-		lblIp.setBounds(10, 70, 61, 14);
+		lblIp.setBounds(10, 43, 61, 14);
 		contentPane.add(lblIp);
 		
 		textIP = new JTextField();
 		textIP.setText("10.0.0.106");
 		textIP.setColumns(10);
-		textIP.setBounds(59, 69, 100, 20);
+		textIP.setBounds(59, 40, 100, 20);
 		contentPane.add(textIP);
 		
 		JComboBox<?> comboBox = new JComboBox<Object>();
@@ -141,7 +131,7 @@ public class DoctorView extends JFrame {
 		
 		JLabel lblPacientesCrticos = new JLabel("Pacientes cr\u00EDticos:");
 		lblPacientesCrticos.setFont(new Font("Tahoma", Font.BOLD, 11));
-		lblPacientesCrticos.setBounds(10, 119, 150, 14);
+		lblPacientesCrticos.setBounds(10, 95, 150, 14);
 		contentPane.add(lblPacientesCrticos);
 		
 		JLabel lblOutrosPacientes = new JLabel("Outros pacientes:");
@@ -194,11 +184,11 @@ public class DoctorView extends JFrame {
 		contentPane.add(lblInformaesDoPaciente);
 		
 		JSeparator separator_1 = new JSeparator();
-		separator_1.setBounds(10, 100, 249, 8);
+		separator_1.setBounds(10, 76, 249, 8);
 		contentPane.add(separator_1);
 				
 		JButton btnAtualizar = new JButton("Atualizar");
-		btnAtualizar.setBounds(170, 115, 89, 23);
+		btnAtualizar.setBounds(169, 91, 89, 23);
 		btnAtualizar.addActionListener(new ActionListener() {
 			
 			@Override
@@ -212,6 +202,7 @@ public class DoctorView extends JFrame {
 					e1.printStackTrace();
 					return;
 				}
+				System.out.println(pacientesCriticos.length);
 				list = new JList(pacientesCriticos);
 				list.setVisibleRowCount(10);
 				list.setBounds(10, 144, 249, 299);
