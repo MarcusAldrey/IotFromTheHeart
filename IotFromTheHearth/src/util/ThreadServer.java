@@ -99,6 +99,7 @@ public class ThreadServer extends Thread {
 							List<Paciente> pacientes = ControllerServer.getInstance().getPacientes();
 							Iterator<Paciente> iterator = pacientes.iterator();
 							boolean pacienteEncontrado = false;
+							System.out.println("Recebeu o nome " + mensagem[2]);
 							while(iterator.hasNext()) {
 								Paciente paciente = (Paciente) iterator.next();
 								if(paciente.getNome().equals(mensagem[2])) {
@@ -106,9 +107,9 @@ public class ThreadServer extends Thread {
 									pacienteEncontrado = true;
 									break;
 								}
-								if(pacienteEncontrado == false)
-									output.writeObject("paciente nao encontrado");
-							}			
+							}
+							if(pacienteEncontrado == false)
+								output.writeObject("paciente nao encontrado");
 						}
 					}
 				}
