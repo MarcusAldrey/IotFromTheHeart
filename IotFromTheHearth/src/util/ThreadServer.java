@@ -39,7 +39,7 @@ public class ThreadServer extends Thread {
 		try {
 			while(true) {
 				String[] mensagem = ((String) input.readObject()).split(","); //Divide a mensagem onde tem vírgula
-				System.out.println(ControllerServer.getInstance().getPacientes().size());
+				//System.out.println(ControllerServer.getInstance().getPacientes().size());
 				//for(String m : mensagem)
 				//System.out.println(m);
 				/*Caso a mensagem venha de um sensor*/
@@ -73,8 +73,8 @@ public class ThreadServer extends Thread {
 						Paciente novo = new Paciente(nome, frequencia, sistole, diastole, emMovimento);
 						ControllerServer.getInstance().adicionarPaciente(novo);
 					}
-					for(Paciente paciente : pacientes)
-						System.out.println(paciente.getNome()+","+paciente.getSistole()+","+paciente.getDiastole()+","+paciente.getFrequencia()+","+paciente.isEmMovimento());
+					//for(Paciente paciente : pacientes)
+						//System.out.println(paciente.getNome()+","+paciente.getSistole()+","+paciente.getDiastole()+","+paciente.getFrequencia()+","+paciente.isEmMovimento());
 				}
 				
 				/*Caso a mensagem venha de um médico*/
@@ -88,8 +88,10 @@ public class ThreadServer extends Thread {
 							Iterator<Paciente> iterator = pacientes.iterator();
 							while(iterator.hasNext()) {
 								Paciente paciente = (Paciente) iterator.next();
-								todosOsPacientes.concat(paciente.getNome()+",");					
+								String nomePacienteAtual = paciente.getNome();
+								todosOsPacientes = todosOsPacientes.concat(nomePacienteAtual+",");					
 							}
+							System.out.println(todosOsPacientes);
 							output.writeObject(todosOsPacientes);
 						}
 						/* Caso queira algum especifico, receberá o objeto do paciente */
