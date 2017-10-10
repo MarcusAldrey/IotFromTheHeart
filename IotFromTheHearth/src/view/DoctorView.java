@@ -14,6 +14,7 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 import control.ControllerMedico;
+import control.ControllerServer;
 import model.Paciente;
 
 import javax.swing.JTable;
@@ -42,7 +43,7 @@ public class DoctorView extends JFrame {
 	private JTextField textPorta;
 	private JLabel lblIp;
 	private JTextField textIP;
-	private JList list;
+	private JList<?> list;
 
 	/**
 	 * Launch the application.
@@ -102,7 +103,19 @@ public class DoctorView extends JFrame {
 					// TODO Auto-generated catch block
 					JOptionPane.showMessageDialog(null, "Não foi possível criar conexão");
 					e1.printStackTrace();
+					return;
 				}
+				btnConectar.setText("Conectado");
+				List <Paciente> pacientes = null;
+				try {
+					pacientes = ControllerMedico.getInstance().getPacientes();
+				} catch (ClassNotFoundException | IOException e1) {
+					// TODO Auto-generated catch block
+					JOptionPane.showMessageDialog(null, "Não foi possível receber a lista de clientes");
+					e1.printStackTrace();
+					return;
+				}
+				list = new JList<Paciente>((Paciente[]) pacientes.toArray());
 			}
 		});
 		contentPane.add(btnConectar);
@@ -129,7 +142,7 @@ public class DoctorView extends JFrame {
 		textIP.setBounds(59, 69, 100, 20);
 		contentPane.add(textIP);
 		
-		JComboBox comboBox = new JComboBox();
+		JComboBox<?> comboBox = new JComboBox<Object>();
 		comboBox.setBounds(10, 479, 249, 20);
 		contentPane.add(comboBox);
 		
@@ -191,8 +204,7 @@ public class DoctorView extends JFrame {
 		separator_1.setBounds(10, 100, 249, 8);
 		contentPane.add(separator_1);
 		
-		List pacientes = ControllerMedico.getInstance().getPacientes();
-		list = new JList(pacientes.toArray());
+		list = new JList<Object>();
 		list.setFont(new Font("Roboto", Font.PLAIN, 16));
 		list.setBounds(10, 144, 249, 299);
 		list.setVisibleRowCount(10);

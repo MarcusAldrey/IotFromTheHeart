@@ -19,6 +19,7 @@ public class ControllerMedico {
 	private List<Paciente> pacientes;
 	
 	private ControllerMedico() {
+	
 	}
 	
 	public void criarConexao(String IP, int porta) throws IOException {
@@ -52,9 +53,13 @@ public class ControllerMedico {
 
 	/**
 	 * @return the pacientes
+	 * @throws IOException 
+	 * @throws ClassNotFoundException 
 	 */
-	public List<Paciente> getPacientes() {
-		return pacientes;
+	public List<Paciente> getPacientes() throws IOException, ClassNotFoundException {
+		output.writeObject("connect medico,info,todos");
+		while(true)
+			System.out.println(input.readObject());
 	}
 
 	/**

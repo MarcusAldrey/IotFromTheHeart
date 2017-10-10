@@ -40,7 +40,7 @@ public class ThreadServer extends Thread {
 			while(true) {
 				String[] mensagem = ((String) input.readObject()).split(","); //Divide a mensagem onde tem vírgula
 				//for(String m : mensagem)
-					//System.out.println(m);
+				//System.out.println(m);
 				/*Caso a mensagem venha de um sensor*/
 				if(mensagem[0].equals("connect sensor")) {
 					if(mensagem.length != 6) {
@@ -75,10 +75,30 @@ public class ThreadServer extends Thread {
 					for(Paciente paciente : pacientes)
 						System.out.println(paciente.getNome()+","+paciente.getSistole()+","+paciente.getDiastole()+","+paciente.getFrequencia()+","+paciente.isEmMovimento());
 				}
-				else if(mensagem[0] == "connect medico") {
-					
-				}
+				
 				/*Caso a mensagem venha de um médico*/
+				else if(mensagem[0].equals("connect medico")) {
+					/* Caso a mensagem seja de um médico, será verificado se ele quer todos os pacientes ou algum especifico */
+					if(mensagem[1].equals("info")) {
+						/* Caso queira todos, recebera a lista de pacientes, ordenada por risco */
+						if(mensagem[2].equals("todos"))
+							output.writeObject(ControllerServer.getInstance().getPacientes());
+						/* Caso queira algum especifico, receberá o objeto do paciente */
+						else {
+							List<Paciente> pacientes = ControllerServer.getInstance().getPacientes();
+							Iterator<Paciente> iterator = pacientes.iterator();
+							while(iterator.hasNext()) {
+								Paciente paciente = (Paciente) iterator.next();
+								if(paciente.getNome().equals(mensagem[2])) {
+									output.writeObject(paciente);
+									break;
+								}
+							}			
+						}
+					}
+				}
+				else
+					System.out.println("Mensagem inválida recebida");
 				
 			}
 		} catch (ClassNotFoundException | IOException e) {
@@ -86,6 +106,8 @@ public class ThreadServer extends Thread {
 			e.printStackTrace();
 		} 
 	}
+
+
 	public Socket getSocket() {
 		return socket;
 	}
