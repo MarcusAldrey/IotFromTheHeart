@@ -49,6 +49,7 @@ public class ControllerMedico {
 		output.writeObject("connect medico,info,"+nome);
 		while(true) {
 			String mensagem = (String) input.readObject();
+			System.out.println(mensagem);
 			if(mensagem.equals("paciente nao encontrado")) {
 				throw new PacienteNaoEncontradoException();
 			}
@@ -86,7 +87,5 @@ public class ControllerMedico {
 	public void setPacientes(List<Paciente> pacientes) {
 		this.pacientes = pacientes;
 	}
-
-
 
 }
