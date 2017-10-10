@@ -217,6 +217,8 @@ public class DoctorView extends JFrame {
 				}
 				System.out.println(pacientesCriticos.length);
 				list = new JList(pacientesCriticos);
+				for(String nome: pacientesCriticos)
+					System.out.println("O nome " + nome +" está na lista");
 				list.setVisibleRowCount(10);
 				list.setBounds(10, 144, 249, 299);
 				list.addListSelectionListener(new SelecaoDePaciente());
