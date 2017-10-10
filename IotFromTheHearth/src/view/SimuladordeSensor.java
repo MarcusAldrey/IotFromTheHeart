@@ -326,6 +326,7 @@ public class SimuladordeSensor extends JFrame implements ActionListener {
 	
 	private class Transmissao extends TimerTask {
 		public void run() {
+			/*Método chamado a cada 2 segundos. Envia as informações do sensor para o servidor. Caso tente 5 vezes e não consiga, para a transmissão*/
 			if(tentativas == 5) {
 				pararTransmissao();
 				JOptionPane.showMessageDialog(null, "Conexão perdida");
