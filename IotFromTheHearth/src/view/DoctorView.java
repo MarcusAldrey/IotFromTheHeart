@@ -1,5 +1,6 @@
 package view;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.Font;
@@ -7,7 +8,6 @@ import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
-import java.nio.channels.SeekableByteChannel;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -47,14 +47,17 @@ public class DoctorView extends JFrame {
 	private JLabel lblIp;
 	private JTextField textIP;
 	private String[] pacientesCriticos;
-	private JTable table;
 	protected JList list;
 	private JLabel textFreq;
 	private JLabel textPress;
 	private JLabel textEstado;
+	private String pacienteSelecionado;
 	private Paciente pacienteMonitorado;
 	private Timer timer;
-
+	boolean monitoramentoAtivo;
+	private JButton btnMonitoramento;
+	private JButton btnAtualizar;
+	
 	/**
 	 * Launch the application.
 	 */
@@ -187,17 +190,17 @@ public class DoctorView extends JFrame {
 		textEstado.setBounds(430, 372, 112, 127);
 		contentPane.add(textEstado);
 
-		JLabel lblInformaesDoPaciente = new JLabel("Nenhum paciente selecionado");
+		JLabel lblInformaesDoPaciente = new JLabel("Monitoramento em tempo real");
 		lblInformaesDoPaciente.setFont(new Font("Tahoma", Font.BOLD, 12));
 		lblInformaesDoPaciente.setHorizontalAlignment(SwingConstants.CENTER);
-		lblInformaesDoPaciente.setBounds(291, 14, 283, 42);
+		lblInformaesDoPaciente.setBounds(291, 14, 283, 14);
 		contentPane.add(lblInformaesDoPaciente);
 
 		JSeparator separator_1 = new JSeparator();
 		separator_1.setBounds(10, 76, 249, 8);
 		contentPane.add(separator_1);
 
-		JButton btnAtualizar = new JButton("Atualizar");
+		btnAtualizar = new JButton("Atualizar");
 		btnAtualizar.setBounds(169, 91, 89, 23);
 		btnAtualizar.addActionListener(new ActionListener() {
 
@@ -222,6 +225,35 @@ public class DoctorView extends JFrame {
 			}
 		});
 		contentPane.add(btnAtualizar);				
+		
+		btnMonitoramento = new JButton("Ativar");
+		btnMonitoramento.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+			}
+		});
+		btnMonitoramento.setBounds(387, 37, 89, 23);
+		contentPane.add(btnMonitoramento);
+	}
+	
+	private void pararTransmissao(){
+		monitoramentoAtivo = false;
+		btnMonitoramento.setText("Ativar");
+		btnMonitoramento.setForeground(Color.BLACK);
+		btnAtualizar.setEnabled(true);
+		list.setEnabled(true);
+		timer.cancel();
+		System.out.println("Monitoramento cancelado");
+	}
+	
+	private void iniciarTransmissao() {
+		monitoramentoAtivo = true;
+		btnMonitoramento.setText("Desativar");
+		btnMonitoramento.setForeground(Color.DARK_GRAY);
+		btnAtualizar.setEnabled(false);
+		list.setEnabled(false);
+		timer = new Timer();
+		timer.schedule(new Monitoramento(),2000,2000);
+		System.out.println("Monitoramento iniciado");
 	}
 
 	private class SelecaoDePaciente implements ListSelectionListener {
@@ -268,17 +300,7 @@ public class DoctorView extends JFrame {
 		@Override
 		public void run() {
 			// TODO Auto-generated method stub
-			Paciente pacienteMonitorado = null;
-			try {
-				pacienteMonitorado = ControllerMedico.getInstance().receberPacientedoServidor(list.getSelectedValue().toString());
-			} catch (ClassNotFoundException | IOException | PacienteNaoEncontradoException
-					| MensagemInvalidaException e) {
-				// TODO Auto-generated catch block
-				JOptionPane.showMessageDialog(null, "Erro ao atualizar");
-				e.printStackTrace();
-				timer.cancel();
-				return;
-			}
+			System.out.println(pacienteMonitorado);
 			if(pacienteMonitorado != null) {
 				textFreq.setText(Integer.toString(pacienteMonitorado.getFrequencia()));
 				textPress.setText(pacienteMonitorado.getSistole()+"/"+pacienteMonitorado.getDiastole());
