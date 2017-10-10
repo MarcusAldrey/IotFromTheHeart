@@ -4,8 +4,11 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.List;
 
 import exceptions.MedicoNaoEncontradoException;
+import model.Paciente;
 
 public class ControllerMedico {
 	
@@ -13,6 +16,7 @@ public class ControllerMedico {
 	private ObjectInputStream input;
 	private ObjectOutputStream output;
 	private static ControllerMedico instance;
+	private List<Paciente> paciente = new ArrayList<Paciente>();
 	
 	private ControllerMedico() {
 	}
@@ -30,12 +34,20 @@ public class ControllerMedico {
 	}
 	
 	public void logar(String usuario, String senha) throws IOException, MedicoNaoEncontradoException, ClassNotFoundException {
-		output.writeObject("CONNECT MEDICO:LOGIN,"+usuario+","+senha);
+		output.writeObject("CONNECT MEDICO,LOGIN,"+usuario+","+senha);
 		while(true){
 			if(input.readObject() == "true")
 				throw new MedicoNaoEncontradoException();
 			return;
 		}
+	}
+	
+	public Paciente receberPaciente(Integer id) {
+		return null;
+	}
+	
+	public List<Paciente> receberPacientes() {
+		return null;
 	}
 		
 }

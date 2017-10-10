@@ -15,8 +15,8 @@ public class ControllerServer {
 	private ObjectInputStream input;
 	private ObjectOutputStream output;
 	private static ControllerServer instance;
-	private static List<Medico> medicos = new ArrayList<Medico>();
-	private static List<Paciente> pacientes = new ArrayList<Paciente>();
+	private List<Medico> medicos = new ArrayList<Medico>();
+	private List<Paciente> pacientes = new ArrayList<Paciente>();
 
 	private ControllerServer() {
 
