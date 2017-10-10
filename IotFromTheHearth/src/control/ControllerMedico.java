@@ -8,32 +8,34 @@ import java.util.ArrayList;
 import java.util.List;
 
 import exceptions.MedicoNaoEncontradoException;
+import exceptions.MensagemInvalidaException;
+import exceptions.PacienteNaoEncontradoException;
 import model.Paciente;
 
 public class ControllerMedico {
-	
+
 	private Socket socket;
 	private ObjectInputStream input;
 	private ObjectOutputStream output;
 	private static ControllerMedico instance;
 	private List<Paciente> pacientes;
-	
+
 	private ControllerMedico() {
-	
+
 	}
-	
+
 	public void criarConexao(String IP, int porta) throws IOException {
 		socket = new Socket(IP,porta);
 		output = new ObjectOutputStream(socket.getOutputStream());
 		input = new ObjectInputStream(socket.getInputStream());
 	}
-	
+
 	public static ControllerMedico getInstance() {
 		if(instance == null)
 			instance = new ControllerMedico();
 		return instance;
 	}
-	
+
 	public void logar(String usuario, String senha) throws IOException, MedicoNaoEncontradoException, ClassNotFoundException {
 		output.writeObject("CONNECT MEDICO,LOGIN,"+usuario+","+senha);
 		while(true){
@@ -42,11 +44,25 @@ public class ControllerMedico {
 			return;
 		}
 	}
-	
-	public Paciente receberPacientedoServidor(Integer id) {
-		return null;
+
+	public Paciente receberPacientedoServidor(String nome) throws IOException, ClassNotFoundException, PacienteNaoEncontradoException, MensagemInvalidaException {
+		output.writeObject("connect medico,info,"+nome);
+		while(true) {
+			String mensagem = (String) input.readObject();
+			if(mensagem.equals("paciente nao encontrado")) {
+				throw new PacienteNaoEncontradoException();
+			}
+			String[] mensagemSeparada = mensagem.split(",");
+			if(mensagemSeparada.length != 4)
+				throw new MensagemInvalidaException();
+			int sistole = Integer.parseInt(mensagemSeparada[0]);
+			int diastole = Integer.parseInt(mensagemSeparada[1]);
+			int frequencia = Integer.parseInt(mensagemSeparada[2]);
+			String emMovimento = mensagemSeparada[3];
+			return new Paciente(nome, frequencia, sistole, diastole, emMovimento);
+		}
 	}
-	
+
 	public List<Paciente> receberPacientesdoServidor() {
 		return null;
 	}
@@ -70,7 +86,7 @@ public class ControllerMedico {
 	public void setPacientes(List<Paciente> pacientes) {
 		this.pacientes = pacientes;
 	}
-	
-	
-		
+
+
+
 }

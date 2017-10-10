@@ -7,20 +7,23 @@ import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.nio.channels.SeekableByteChannel;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
 import control.ControllerMedico;
-import control.ControllerServer;
+import exceptions.MensagemInvalidaException;
+import exceptions.PacienteNaoEncontradoException;
 import model.Paciente;
 
 import javax.swing.JTable;
 import javax.swing.JTextField;
-import javax.swing.ListSelectionModel;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.JLabel;
@@ -46,6 +49,11 @@ public class DoctorView extends JFrame {
 	private String[] pacientesCriticos;
 	private JTable table;
 	protected JList list;
+	private JLabel textFreq;
+	private JLabel textPress;
+	private JLabel textEstado;
+	private Paciente pacienteMonitorado;
+	private Timer timer;
 
 	/**
 	 * Launch the application.
@@ -83,8 +91,10 @@ public class DoctorView extends JFrame {
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 		
+		timer = new Timer();
+		
 		JButton btnConectar = new JButton("Conectar");
-		btnConectar.setBounds(169, 14, 89, 46);
+		btnConectar.setBounds(169, 11, 89, 49);
 		btnConectar.addActionListener(new ActionListener() {
 			
 			@Override
@@ -159,23 +169,23 @@ public class DoctorView extends JFrame {
 		label_2.setBounds(291, 372, 150, 128);
 		contentPane.add(label_2);
 		
-		JLabel label_3 = new JLabel("0");
-		label_3.setFont(new Font("Roboto", Font.PLAIN, 24));
-		label_3.setHorizontalAlignment(SwingConstants.CENTER);
-		label_3.setBounds(430, 76, 112, 111);
-		contentPane.add(label_3);
+		textFreq = new JLabel("0");
+		textFreq.setFont(new Font("Roboto", Font.PLAIN, 24));
+		textFreq.setHorizontalAlignment(SwingConstants.CENTER);
+		textFreq.setBounds(430, 76, 112, 111);
+		contentPane.add(textFreq);
 		
-		JLabel label_4 = new JLabel("0/0");
-		label_4.setFont(new Font("Roboto", Font.PLAIN, 24));
-		label_4.setHorizontalAlignment(SwingConstants.CENTER);
-		label_4.setBounds(430, 209, 112, 128);
-		contentPane.add(label_4);
+		textPress = new JLabel("0/0");
+		textPress.setFont(new Font("Roboto", Font.PLAIN, 24));
+		textPress.setHorizontalAlignment(SwingConstants.CENTER);
+		textPress.setBounds(430, 209, 112, 128);
+		contentPane.add(textPress);
 		
-		JLabel lblEmMovimento = new JLabel("...");
-		lblEmMovimento.setFont(new Font("Roboto", Font.PLAIN, 16));
-		lblEmMovimento.setHorizontalAlignment(SwingConstants.CENTER);
-		lblEmMovimento.setBounds(430, 372, 112, 127);
-		contentPane.add(lblEmMovimento);
+		textEstado = new JLabel("...");
+		textEstado.setFont(new Font("Roboto", Font.PLAIN, 16));
+		textEstado.setHorizontalAlignment(SwingConstants.CENTER);
+		textEstado.setBounds(430, 372, 112, 127);
+		contentPane.add(textEstado);
 		
 		JLabel lblInformaesDoPaciente = new JLabel("Nenhum paciente selecionado");
 		lblInformaesDoPaciente.setFont(new Font("Tahoma", Font.BOLD, 12));
@@ -206,12 +216,68 @@ public class DoctorView extends JFrame {
 				list = new JList(pacientesCriticos);
 				list.setVisibleRowCount(10);
 				list.setBounds(10, 144, 249, 299);
+				list.addListSelectionListener(new SelecaoDePaciente());
 				contentPane.add(list);
 				list.repaint();
 			}
 		});
 		contentPane.add(btnAtualizar);				
+	}
+	
+	private class SelecaoDePaciente implements ListSelectionListener {
+
+		@Override
+		public void valueChanged(ListSelectionEvent e) {
+			// TODO Auto-generated method stub
+			if (e.getValueIsAdjusting()) {//This line prevents double events
+				System.out.println(list.getSelectedValue());
+				try {
+					pacienteMonitorado = ControllerMedico.getInstance().receberPacientedoServidor(list.getSelectedValue().toString());
+				} catch (ClassNotFoundException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				} catch (PacienteNaoEncontradoException e1) {
+					// TODO Auto-generated catch block
+					JOptionPane.showMessageDialog(null, "Paciente não encontrado");
+					e1.printStackTrace();
+				} catch (MensagemInvalidaException e1) {
+					// TODO Auto-generated catch block
+					JOptionPane.showMessageDialog(null, "Mensagem recebida do servidor inválida");
+					e1.printStackTrace();
+				}
+		    }
+			timer = new Timer();
+			timer.schedule(new Monitoramento(), 0,2000);
+		}
 		
+	}
+	
+	private class Monitoramento extends TimerTask {
+
+		@Override
+		public void run() {
+			// TODO Auto-generated method stub
+			System.out.println("attzado");
+			Paciente pacienteMonitorado = null;
+			try {
+				pacienteMonitorado = ControllerMedico.getInstance().receberPacientedoServidor(list.getSelectedValue().toString());
+			} catch (ClassNotFoundException | IOException | PacienteNaoEncontradoException
+					| MensagemInvalidaException e) {
+				// TODO Auto-generated catch block
+				JOptionPane.showMessageDialog(null, "Erro ao atualizar");
+				e.printStackTrace();
+				timer.cancel();
+			}
+			textFreq.setText(Integer.toString(pacienteMonitorado.getFrequencia()));
+			textPress.setText(pacienteMonitorado.getSistole()+"/"+pacienteMonitorado.getDiastole());
+			if(pacienteMonitorado.isEmMovimento().equals("true"))
+				textEstado.setText("Em movimento");
+			else
+				textEstado.setText("Parado");
+		}
 		
 	}
 }
