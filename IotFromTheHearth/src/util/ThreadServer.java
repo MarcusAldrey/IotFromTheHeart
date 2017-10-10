@@ -98,12 +98,16 @@ public class ThreadServer extends Thread {
 						else {
 							List<Paciente> pacientes = ControllerServer.getInstance().getPacientes();
 							Iterator<Paciente> iterator = pacientes.iterator();
+							boolean pacienteEncontrado = false;
 							while(iterator.hasNext()) {
 								Paciente paciente = (Paciente) iterator.next();
 								if(paciente.getNome().equals(mensagem[2])) {
-									output.writeObject(paciente);
+									output.writeObject(paciente.getSistole()+","+paciente.getDiastole()+","+paciente.getFrequencia()+","+paciente.isEmMovimento());
+									pacienteEncontrado = true;
 									break;
 								}
+								if(pacienteEncontrado == false)
+									output.writeObject("paciente nao encontrado");
 							}			
 						}
 					}
