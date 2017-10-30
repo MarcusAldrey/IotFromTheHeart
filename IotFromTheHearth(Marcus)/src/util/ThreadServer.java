@@ -38,21 +38,21 @@ public class ThreadServer extends Thread {
 		// TODO Auto-generated method stub
 		try {
 			while(true) {
-				String[] mensagem = ((String) input.readObject()).split(","); //Divide a mensagem onde tem vírgula
-				//System.out.println(ControllerServer.getInstance().getPacientes().size());
-				//for(String m : mensagem)
-				//System.out.println(m);
+				String mensagem = (String) input.readObject();
+				System.out.println("Recebeu " + mensagem);
+				String[] mensagemDividida = mensagem.split(","); //Divide a mensagem onde tem vírgula
+				
 				/*Caso a mensagem venha de um sensor*/
-				if(mensagem[0].equals("connect sensor")) {
-					if(mensagem.length != 6) {
+				if(mensagemDividida[0].equals("connect sensor")) {
+					if(mensagemDividida.length != 6) {
 						System.out.println("Mensagem inválida recebida"); //Se a mensagem possuir a estrutura errada ela não será processada
 						return;
 					}
-					String nome = mensagem[1];
-					int sistole = Integer.parseInt(mensagem[2]);
-					int diastole = Integer.parseInt(mensagem[3]);
-					int frequencia = Integer.parseInt(mensagem[4]);
-					String emMovimento = mensagem[5];
+					String nome = mensagemDividida[1];
+					int sistole = Integer.parseInt(mensagemDividida[2]);
+					int diastole = Integer.parseInt(mensagemDividida[3]);
+					int frequencia = Integer.parseInt(mensagemDividida[4]);
+					String emMovimento = mensagemDividida[5];
 					List<Paciente> pacientes = ControllerServer.getInstance().getPacientes();
 					Iterator<Paciente> iterator = pacientes.iterator();
 					boolean estaNaLista = false;
@@ -73,16 +73,14 @@ public class ThreadServer extends Thread {
 						Paciente novo = new Paciente(nome, frequencia, sistole, diastole, emMovimento);
 						ControllerServer.getInstance().adicionarPaciente(novo);
 					}
-					//for(Paciente paciente : pacientes)
-						//System.out.println(paciente.getNome()+","+paciente.getSistole()+","+paciente.getDiastole()+","+paciente.getFrequencia()+","+paciente.isEmMovimento());
 				}
-				
+
 				/*Caso a mensagem venha de um médico*/
-				else if(mensagem[0].equals("connect medico")) {
+				else if(mensagemDividida[0].equals("connect medico")) {
 					/* Caso a mensagem seja de um médico, será verificado se ele quer todos os pacientes ou algum especifico */
-					if(mensagem[1].equals("info")) {
-						/* Caso queira todos, recebera a lista de pacientes, ordenada por risco */
-						if(mensagem[2].equals("todos")) {
+					if(mensagemDividida[1].equals("info")) {
+						/* Caso queira todos, recebera uma String com o nome de todos os pacientes separados por vírgula */
+						if(mensagemDividida[2].equals("todos")) {
 							String todosOsPacientes = "";
 							List<Paciente> pacientes = ControllerServer.getInstance().getPacientes();
 							Iterator<Paciente> iterator = pacientes.iterator();
@@ -94,20 +92,21 @@ public class ThreadServer extends Thread {
 							System.out.println(todosOsPacientes);
 							output.writeObject(todosOsPacientes);
 						}
-						/* Caso queira algum especifico, receberá o objeto do paciente */
+						/* Caso queira algum especifico, receberá uma String com os dados do paciente separado por vírgula */
 						else {
 							List<Paciente> pacientes = ControllerServer.getInstance().getPacientes();
 							Iterator<Paciente> iterator = pacientes.iterator();
 							boolean pacienteEncontrado = false;
-							System.out.println("Recebeu o nome " + mensagem[2]);
+							System.out.println("Recebeu o nome " + mensagemDividida[2]);
 							while(iterator.hasNext()) {
 								Paciente paciente = (Paciente) iterator.next();
-								if(paciente.getNome().equals(mensagem[2])) {
+								if(paciente.getNome().equals(mensagemDividida[2])) {
 									output.writeObject(paciente.getSistole()+","+paciente.getDiastole()+","+paciente.getFrequencia()+","+paciente.isEmMovimento());
 									pacienteEncontrado = true;
 									break;
 								}
 							}
+							/* Se toda lista for percorrida e não for encontrado paciente, é enviado uma mensagem de erro ao medico */
 							if(pacienteEncontrado == false)
 								output.writeObject("paciente nao encontrado");
 						}
@@ -115,7 +114,7 @@ public class ThreadServer extends Thread {
 				}
 				else
 					System.out.println("Mensagem inválida recebida");
-				
+
 			}
 		} catch (ClassNotFoundException | IOException e) {
 			// TODO Auto-generated catch block

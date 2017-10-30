@@ -57,6 +57,7 @@ public class DoctorView extends JFrame {
 	boolean monitoramentoAtivo;
 	private JButton btnMonitoramento;
 	private JButton btnAtualizar;
+	private JComboBox<String> comboBoxOutros;
 
 	/**
 	 * Launch the application.
@@ -138,9 +139,9 @@ public class DoctorView extends JFrame {
 		textIP.setBounds(59, 40, 100, 20);
 		contentPane.add(textIP);
 
-		JComboBox<?> comboBox = new JComboBox<Object>();
-		comboBox.setBounds(10, 479, 249, 20);
-		contentPane.add(comboBox);
+		comboBoxOutros = new JComboBox<String>();
+		comboBoxOutros.setBounds(10, 479, 249, 20);
+		contentPane.add(comboBoxOutros);
 
 		JLabel lblPacientesCrticos = new JLabel("Pacientes cr\u00EDticos:");
 		lblPacientesCrticos.setFont(new Font("Tahoma", Font.BOLD, 11));
@@ -223,7 +224,7 @@ public class DoctorView extends JFrame {
 				list.setBounds(10, 144, 249, 299);
 				list.addListSelectionListener(new SelecaoDePaciente());
 				contentPane.add(list);
-				list.repaint();
+				contentPane.repaint();
 			}
 		});
 		contentPane.add(btnAtualizar);				
@@ -307,9 +308,11 @@ public class DoctorView extends JFrame {
 		@Override
 		public void run() {
 			// TODO Auto-generated method stub
+			/* A cada dois segundos, caso o monitoramento esteja ativo, será enviado uma solicitação ao servidor para atualizar
+			 * os valores do paciente monitorado e exibi-los na tela. */
 			atualizarPacienteMonitorado();
 			String infoAtuais = pacienteMonitorado.getFrequencia()+pacienteMonitorado.getSistole()+"/"+pacienteMonitorado.getDiastole()+pacienteMonitorado.isEmMovimento();
-			System.out.println(infoAtuais);
+			//System.out.println(infoAtuais);
 			textFreq.setText(Integer.toString(pacienteMonitorado.getFrequencia()));
 			textPress.setText(pacienteMonitorado.getSistole()+"/"+pacienteMonitorado.getDiastole());
 			if(pacienteMonitorado.isEmMovimento().equals("true"))

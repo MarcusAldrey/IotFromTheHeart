@@ -24,6 +24,12 @@ public class ControllerMedico {
 
 	}
 
+	/**
+	 * Cria um socket com o servidor
+	 * @param IP
+	 * @param porta
+	 * @throws IOException
+	 */
 	public void criarConexao(String IP, int porta) throws IOException {
 		socket = new Socket(IP,porta);
 		output = new ObjectOutputStream(socket.getOutputStream());

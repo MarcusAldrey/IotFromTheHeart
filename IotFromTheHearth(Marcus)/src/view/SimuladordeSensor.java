@@ -302,6 +302,9 @@ public class SimuladordeSensor extends JFrame implements ActionListener {
 		tentativas = 0;
 	}
 	
+	/**
+	 * 
+	 */
 	private void iniciarTransmissao() {
 		try {
 			controller.criarConexao(textIP.getText(), Integer.parseInt(textPorta.getText()));
